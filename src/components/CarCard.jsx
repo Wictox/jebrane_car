@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const CarCard = ({ car }) => {
     return (
@@ -22,7 +23,7 @@ const CarCard = ({ car }) => {
                         <span className="amount">{car.price} DH</span>
                         <span className="period">/ jour</span>
                     </div>
-                    <button className="btn-card">Louer Maintenant</button>
+                    <Link to={`/car/${car.id}`} className="btn-card" style={{ textDecoration: 'none', textAlign: 'center' }}>Louer Maintenant</Link>
                 </div>
             </div>
         </div>

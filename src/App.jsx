@@ -1,17 +1,28 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import CarList from './components/CarList';
 import Footer from './components/Footer';
+import Home from './pages/Home';
+import CarDetails from './pages/CarDetails';
+import BookingForm from './pages/BookingForm';
+import BookingSuccess from './pages/BookingSuccess';
+import ScrollToTop from './components/ScrollToTop'; // We'll create this to scroll top on nav
 
 function App() {
   return (
-    <div className="App">
-      <Navbar />
-      <Hero />
-      <CarList />
-      <Footer />
-    </div>
+    <Router basename={import.meta.env.BASE_URL}>
+      <ScrollToTop />
+      <div className="App">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/car/:id" element={<CarDetails />} />
+          <Route path="/booking/:id" element={<BookingForm />} />
+          <Route path="/success" element={<BookingSuccess />} />
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
