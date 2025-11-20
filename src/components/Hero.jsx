@@ -29,7 +29,7 @@ const Hero = () => {
                 </div>
                 <div className="hero-image">
                     <div className="image-wrapper">
-                        <img src="/owner.jpg" alt="Jebrane - Propriétaire de JebraneCar" />
+                        <img src={`${import.meta.env.BASE_URL}owner.jpg`} alt="Jebrane - Propriétaire de JebraneCar" />
                         <div className="owner-card">
                             <p>Jebrane</p>
                             <span>Fondateur & PDG</span>
