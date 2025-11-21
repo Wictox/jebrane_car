@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { cars } from '../data/cars';
+import { supabase } from '../lib/supabaseClient';
 
 const BookingForm = () => {
     const { id } = useParams();
@@ -14,6 +15,8 @@ const BookingForm = () => {
         startDate: '',
         duration: '1'
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
 
     if (!car) return null;
 
@@ -21,11 +24,42 @@ const BookingForm = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // In a real app, we would send this data to a backend
-        console.log('Booking submitted:', { car, ...formData });
-        navigate('/success');
+        setIsSubmitting(true);
+        setError(null);
+
+        if (!supabase) {
+            setError("Configuration manquante: API Key Supabase non trouvée. Veuillez contacter l'administrateur.");
+            setIsSubmitting(false);
+            return;
+        }
+
+        try {
+            const { error: supabaseError } = await supabase
+                .from('bookings')
+                .insert([
+                    {
+                        customer_name: formData.name,
+                        phone: formData.phone,
+                        email: formData.email,
+                        car_model: `${car.brand} ${car.model}`,
+                        start_date: formData.startDate,
+                        duration: parseInt(formData.duration),
+                        total_price: car.price * parseInt(formData.duration),
+                        status: 'pending'
+                    }
+                ]);
+
+            if (supabaseError) throw supabaseError;
+
+            navigate('/success');
+        } catch (err) {
+            console.error('Error booking:', err);
+            setError('Une erreur est survenue lors de la réservation. Veuillez réessayer ou nous contacter par téléphone.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const total = car.price * parseInt(formData.duration);
@@ -79,7 +113,10 @@ const BookingForm = () => {
                                 </div>
                             </div>
 
-                            <button type="submit" className="btn-primary" style={{ width: '100%', fontSize: '1.1rem', padding: '15px' }}>Confirmer la Réservation</button>
+                            {error && <div style={{ color: 'red', marginBottom: '15px', textAlign: 'center' }}>{error}</div>}
+                            <button type="submit" className="btn-primary" disabled={isSubmitting} style={{ width: '100%', fontSize: '1.1rem', padding: '15px', opacity: isSubmitting ? 0.7 : 1 }}>
+                                {isSubmitting ? 'Traitement...' : 'Confirmer la Réservation'}
+                            </button>
                             <Link to={`/car/${car.id}`} style={{ display: 'block', textAlign: 'center', marginTop: '15px', color: '#888' }}>Annuler</Link>
                         </form>
                     </div>

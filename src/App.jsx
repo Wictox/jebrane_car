@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import CarDetails from './pages/CarDetails';
 import BookingForm from './pages/BookingForm';
 import BookingSuccess from './pages/BookingSuccess';
+import AdminDashboard from './pages/AdminDashboard';
 import ScrollToTop from './components/ScrollToTop'; // We'll create this to scroll top on nav
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/car/:id" element={<CarDetails />} />
           <Route path="/booking/:id" element={<BookingForm />} />
           <Route path="/success" element={<BookingSuccess />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
         <Footer />
       </div>
